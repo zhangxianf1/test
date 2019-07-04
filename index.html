@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="webapp/index.css" />
+<!-- <script src="index.js" /> -->
+<title>文件管理系统</title>
+<script>
+//修改url
+function updateURL() {
+	var url = document.URL;
+	url = url.replace("/index.html", "");
+	document.URL = url + absolute;
+}
+
+//保存上级目录的相对路径
+var absolute = '';
+
+//ajax获取服务端数据
+function getFiles(url) {	
+	//指定url
+	if(url == null || url == "")	
+		url = "http://localhost:8080/D:/succezIDE/workspace/study";
+	else {
+		//保存上一级目录的名称路径
+		absolute = url;
+		//setUrl(absolute);
+	}
+	//1.指定对象
+	var xmlHttp = new XMLHttpRequest();
+	//2.开启连接
+	xmlHttp.open("GET", url, true);
+	
+	//3. 响应函数
+	xmlHttp.onreadystatechange = function() {
+		// 如果响应成功，就获取json
+		if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+			//获取响应数据
+			var result = xmlHttp.responseText;
+			// 使用eval将返回的字符串转换成js对象
+			var files = eval("(" + result + ")");
+			
+			//删除原有的行
+			deleteTable();
+			// 获取files的信息
+			for (var i = 0; i < files.length; i++) {
+				// 将files的信息填充到html中
+				appendRow(files[i][0], files[i][1], files[i][2]);
+			}
+		}else {
+			return;
+		}
+	}
+	
+	//4.发送请求
+	xmlHttp.send();
+}
+//删除原有的行
+function deleteTable() {
+	var table = document.getElementById("files");
+	if(table != null) {
+		var length = table.rows.length;
+		for(i = 1; i < length; i++) {
+			table.deleteRow(1);
+		}
+	}
+}
+
+// 添加新行
+function appendRow(name, size, date) {
+	//在表格中插入行
+	var table = document.getElementById("files");
+	var newRow = table.insertRow(table.rows.length);
+
+	// 添加新的单元格
+	newRow.insertCell(0).innerHTML = "<a href='javascript:;' onclick=getFiles('" + absolute + "/"+ name + "')>" + name + "</a>";
+	//newRow.insertCell(0).innerHTML = "<a href='/" + name + "' onclick=getFiles('" + absolute + "/" + name + "')>" + name + "</a>";
+	newRow.insertCell(1).innerHTML = size;
+	newRow.insertCell(2).innerHTML = date;
+}
+
+</script>
+</head>
+
+<body onload="getFiles('')">
+	<h2>ftp文件下载系统</h2>
+	<table id="files">
+		<thead>
+			<tr>
+				<th>名称</th>
+				<th>大小</th>
+				<th>修改日期</th>
+			</tr>
+		</thead>
+		<tbody id="tbody">
+			<tr>
+				<td>
+					<a href="">3.1.4</a>
+				</td>
+				<td>100MB</td>
+				<td>2018-5-10 8:00:00</td>
+			</tr>
+		</tbody>
+
+	</table>
+
+
+</body>
+</html>

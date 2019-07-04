@@ -1,0 +1,32 @@
+@charset "gb2312";
+body {
+	background: black;
+}
+
+h2 {
+	/** 设置边距 */
+	padding: 20px 40px;
+	color: white;
+	/** 背景渐变 */
+	background: -webkit-linear-gradient(left, #1d85e2, #a9d8f3);
+	background: -o-linear-gradient(left, #1d85e2, #a9d8f3);
+	background: -moz-linear-gradient(left, #1d85e2, #a9d8f3);
+	background: linear-gradient(left, #1d85e2, #a9d8f3);
+}
+
+/** 表格单元的边距 */
+th, td {
+	padding: 5px 50px;
+}
+
+/** a标签去掉下划线 */
+a {
+	text-decoration: none;
+}
+
+/** a标签增加图片 */
+/* a.dir {
+	background-image:
+		url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFW…GcDo8ejn+c/6eiK9poz15Kw7Dr/vN/z6W7q++091/AQYA5mZ8GYJ9K0AAAAAASUVORK5CYII= );
+	background-color: initial;
+} */
