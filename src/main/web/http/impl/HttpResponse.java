@@ -63,7 +63,7 @@ public class HttpResponse implements Response {
 
 	/** 发送响应消息 */
 	@Override
-	public void sendResponse(String fileName, boolean isAjax) {
+	public void sendResponse(String fileName, boolean isPost) {
 		//如果请求的资源为空，返回hello world
 		if (fileName.equals("") || fileName == null) {
 			fileName = "index.html";
@@ -85,22 +85,37 @@ public class HttpResponse implements Response {
 				//1.响应消息的状态行
 				out.println("HTTP/1.0 " + status + " OK");
 				//2.响应消息的文件类型
-				if(isAjax) {	//如果是ajax请求，就下载这个文件
+				if(isPost) {
 					//设置contentType类型，自动下载文件
 					out.println("Content-Type: application/octet-stream");
 					//设置文件头
 					out.println("Content-Disposition: attachment; filename=" + fileName.substring(fileName.indexOf('/') + 1));
-					out.println("");
-					//下载文件
-					FileUtil.sendFile(out, file);
-					
-				}  else {		//否则，就显示文件的内容
+				} else {
+					//设置文件类型
 					out.println("Content_Type:" + contentType + "; charset=UTF-8");
-					//3.响应消息的空行
-					out.println("");
-					//4.响应体数据
-					FileUtil.sendFile(out, file);
 				}
+				//3.响应消息的空行
+				out.println("");
+				//4.发送文件
+				FileUtil.sendFile(out, file);
+				//4.响应体数据
+//				FileUtil.sendFile(out, file);
+//				if(isAjax) {	//如果是ajax请求，就下载这个文件
+//					//设置contentType类型，自动下载文件
+//					out.println("Content-Type: application/octet-stream");
+//					//设置文件头
+//					out.println("Content-Disposition: attachment; filename=" + fileName.substring(fileName.indexOf('/') + 1));
+//					out.println("");
+//					//下载文件
+//					FileUtil.sendFile(out, file);
+//					
+//				}  else {		//否则，就显示文件的内容
+//					out.println("Content_Type:" + contentType + "; charset=UTF-8");
+//					//3.响应消息的空行
+//					out.println("");
+//					//4.响应体数据
+//					FileUtil.sendFile(out, file);
+//				}
 			}
 			else { //如果是目录，则将目录的文件资源转换为json数据
 				String res = FileUtil.getFiles(out, fileName);

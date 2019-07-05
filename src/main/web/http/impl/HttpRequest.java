@@ -22,10 +22,13 @@ import main.web.http.Request;
 public class HttpRequest implements Request {
 	//日志对象
 	private final Logger log = LoggerFactory.getLogger(HttpResponse.class);
-	
+
 	private Socket client; //客户端套接字
-	private BufferedReader in;	//请求的输入流
-	String header;		///请求的消息头
+
+	private BufferedReader in; //请求的输入流
+
+	String line;	//请求的消息行
+	String header;	//请求的消息头
 
 	public HttpRequest(Socket client) throws IOException {
 		this.client = client;
@@ -38,9 +41,9 @@ public class HttpRequest implements Request {
 	@Override
 	public String getHeader() throws IOException {
 		//如果之前读取过，就直接返回
-		if(header != null) 
+		if (header != null)
 			return header;
-		
+
 		//使用StringBuuilder拼接读取到的header
 		StringBuilder sb = new StringBuilder();
 		String string = null;
@@ -48,7 +51,7 @@ public class HttpRequest implements Request {
 		while (!(string = in.readLine()).equals("")) {
 			sb.append(string + "\n");
 		}
-		
+
 		header = sb.toString();
 		return sb.toString();
 	}
@@ -62,10 +65,10 @@ public class HttpRequest implements Request {
 	@Override
 	public String getHeader(String key) throws IOException {
 		//如果header没有初始化，就进行读取
-		if(header == null) 
+		if (header == null)
 			getHeader();
 		//如果请求头中没有message，返回null
-		if(header.indexOf(key) < 0) 
+		if (header.indexOf(key) < 0)
 			return null;
 		//根据message的下标和最近的一个换行符的下标获取值
 		int first = header.indexOf(key) + key.length() + 2;
@@ -77,23 +80,28 @@ public class HttpRequest implements Request {
 	/*请求的方法类型*/
 	@Override
 	public String getMethod() throws IOException {
-		//请求行
-		String msg = in.readLine();
+		//如果header没有初始化，就进行读取
+		if(line == null) {
+			line = in.readLine();
+		}
 		//请求行的开始到第一个空格之间就是请求方法
-		return msg.substring(0, msg.indexOf(' '));
+		return line.substring(0, line.indexOf(' '));
 	}
 
 	/*请求头部的资源文件路径*/
 	@Override
 	public String getServerPath() throws IOException {
 		//获取请求行
-		String msg = in.readLine();
-		log.debug("request line: " + msg);
+		if(line == null) {
+			line = in.readLine();
+		}
+		
+		log.debug("request line: " + line);
 
 		//请求资源的相对路径：两个空格之间的字符串
-		String fileName = msg.substring(msg.indexOf(' ') + 1);
+		String fileName = line.substring(line.indexOf(' ') + 1);
 		fileName = fileName.substring(1, fileName.indexOf(' '));
-		
+
 		return fileName;
 	}
 

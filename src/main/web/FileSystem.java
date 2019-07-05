@@ -43,16 +43,16 @@ public class FileSystem extends Thread {
 	/** 发送响应消息 */
 	public void run() {
 		try {
-			log.debug("client: " + this.toString());
-			log.debug("request: " + request.toString());
-			log.debug("response: " + response.toString());
+//			log.debug("client: " + this.toString());
+//			log.debug("request: " + request.toString());
+//			log.debug("response: " + response.toString());
 			
 			//请求的资源路径
 			String fileName = request.getServerPath();
-			boolean isAjax = request.getHeader("Accept").equals("*/*");
+			boolean isPost = request.getMethod().equals("POST");
 			
 			//返回响应消息
-			response.sendResponse(fileName, isAjax);
+			response.sendResponse(fileName, isPost);
 		}
 		catch (IOException e) {
 			// TODO Auto-generated catch block
